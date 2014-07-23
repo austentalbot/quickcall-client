@@ -74,7 +74,68 @@
     currentUser: currentUser
   };
 })
+//SMSFactor: Used to send SMS
+.factory('SMSFactory', function ($http, $ionicPopup, $window) {
 
+  //current users data from local storage
+  var currentUser = {};
+
+  //sms function, sends post request to server
+  var sms = function(destinationNumber, text) {
+    //Get user object out of local storage
+    var userData = JSON.parse($window.localStorage['com.quickCall.auth']);
+    //The server expects an object with a dst, the number user is calling, and src, user's numbe
+    var serverData = {
+      text: text
+      dst: destinationNumber,
+      src: userData.number,
+      plivoNumber: userData.plivoNumber,
+      authId: userData.id,
+      authToken:userData.token
+    };
+
+    /*This is a sloppy way to make the number in the alert pop-up look nice,
+    courtesy of Kia   ┐('～`;)┌  Not currently in use*/
+    var formatNumber = function(number){
+      if(number.length === 11){
+        var arr = number.split('');
+        arr.splice(0,1);
+        return '(' +
+          arr.splice(0,3).join('') + ") " +
+          arr.splice(0,3).join('') + "-" +
+          arr.splice(0,4).join('');
+      } else if (number.length ===10 ) {
+        var arr = number.split('');
+        return '(' +
+          arr.splice(0,3).join('') + ") " +
+          arr.splice(0,3).join('') + "-" +
+          arr.splice(0,4).join('');
+      }
+      else {
+        return number;
+      }
+    };
+
+    //This popup show's up in the screen when a call is initiated
+    var alertPopup = $ionicPopup.alert({
+      title: 'Texting...',
+      template: formatNumber(destinationNumber) + ": " + text
+    });
+
+    //The actual server post request
+    return $http({
+      method: 'POST',
+      url: 'http://quickcall-server-plus.herokuapp.com/sms',
+      data: JSON.stringify(serverData)
+    });
+  };
+
+  //The SMSFactory returns, usable in other controllers when SMSFactory is injected
+  return {
+    sms: sms,
+    currentUser: currentUser
+  };
+})
 .factory('LoginFactory', function ($http, $state, $ionicPopup, $window){
   //used for databinding on login.html
   var userInput = {};

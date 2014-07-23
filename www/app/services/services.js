@@ -62,7 +62,8 @@
     //The actual server post request
     return $http({
       method: 'POST',
-      url: 'http://quickcall-server-plus.herokuapp.com/call',
+      // url: 'http://quickcall-server-plus.herokuapp.com/call',
+      url: 'http://localhost:3000/call',
       data: JSON.stringify(serverData)
     });
   };
@@ -82,11 +83,12 @@
 
   //sms function, sends post request to server
   var sms = function(destinationNumber, text) {
+    console.log('in sms factory');
     //Get user object out of local storage
     var userData = JSON.parse($window.localStorage['com.quickCall.auth']);
     //The server expects an object with a dst, the number user is calling, and src, user's numbe
     var serverData = {
-      text: text
+      text: text,
       dst: destinationNumber,
       src: userData.number,
       plivoNumber: userData.plivoNumber,
@@ -125,7 +127,8 @@
     //The actual server post request
     return $http({
       method: 'POST',
-      url: 'http://quickcall-server-plus.herokuapp.com/sms',
+      // url: 'http://quickcall-server-plus.herokuapp.com/sms',
+      url: 'http://localhost:3000/sms',
       data: JSON.stringify(serverData)
     });
   };
@@ -147,7 +150,8 @@
     //verifying users plivo credentials
     $http({
       method: 'GET',
-      url: 'http://quickcall-server-plus.herokuapp.com/account',
+      // url: 'http://quickcall-server-plus.herokuapp.com/account',
+      url: 'http://localhost:3000/account',
       /*sending authID and authToken to verify with plivo if successful plivo will send us a user
       JSON object if credentials are invalid we will be sent an error message from plivo*/
       params:{

@@ -14,7 +14,7 @@ angular.module('app.main.dialer', [
       }
     });
 })
-.controller('DialerCtrl', function($scope, DialerFactory, $state, $ionicGesture){
+.controller('DialerCtrl', function($scope, DialerFactory, SMSFactory, $state, $ionicGesture){
   //Stores the three most recently called numbers to display on Dialer View
   $scope.recentNumbers = DialerFactory.recentNumbers;
 
@@ -43,6 +43,11 @@ angular.module('app.main.dialer', [
     DialerFactory.call($scope.phoneNumber);
     $scope.phoneNumber = '';
   };
+  //set up test for sending SMS; need to build this out further
+  $scope.sendSms = function() {
+    console.log('sending sms');
+    SMSFactory.sms($scope.phoneNumber, 'hello from plivo');
+  }
 
 
 })
